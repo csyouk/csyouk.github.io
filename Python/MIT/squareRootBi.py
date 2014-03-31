@@ -17,5 +17,16 @@ def squareRootBi(x, epsilon):
         guess = ( low + high )/2.0
         ctr += 1
     assert ctr <= 100, 'Iteration count exceeded'
-    print 'Bisection method. Num. Oterations:' , ctr, 'Estimate:', guess
+    print 'Bisection method. Num. Iterations:' , ctr, 'Estimate:', guess
     return guess
+
+
+def testBi():
+    print ' squareRootBi(4, 0.0001)'
+    squareRootBi(4, 0.0001)
+    print ' squareRootBi(9, 0.0001)'
+    squareRootBi(9, 0.0001)
+    print ' squareRootBi(2, 0.0001)'
+    squareRootBi(2, 0.0001)
+    print ' squareRootBi(0.25, 0.0001)'
+    squareRootBi(0.25, 0.0001)

@@ -1,4 +1,4 @@
-div {
+/*div {
     float: center;
     height: 100px;
     width: 100px;
@@ -10,13 +10,21 @@ div {
 p {
     font-size: 30px;
     text-align: center;
-    /*margin: 0 auto;*/
+    margin: 0 auto;
+}*/
+
+#container {
+    width: 800px;
 }
 
 #frameLeft {
-    background-color : red;
+    height: 500px;
+    width: 500px;
+    float: left;
+    background-color: green;
 }
 
 #frameRight {
-    background-color : blue;
+    width: 200px;
+    float: left;
 }
