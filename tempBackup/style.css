@@ -1,0 +1,30 @@
+/*div {
+    float: center;
+    height: 100px;
+    width: 100px;
+    background-color: #4ECDC4;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+p {
+    font-size: 30px;
+    text-align: center;
+    margin: 0 auto;
+}*/
+
+#container {
+    width: 800px;
+}
+
+#frameLeft {
+    height: 500px;
+    width: 500px;
+    float: left;
+    background-color: green;
+}
+
+#frameRight {
+    width: 200px;
+    float: left;
+}
