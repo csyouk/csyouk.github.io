@@ -2,9 +2,18 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>cs</title>
+    <title>CS</title>
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="./custom/css/style.css" title="no title" charset="utf-8">
   </head>
   <body>
-    <b><a href="#">시각화</a></b>
+    <b><a onclick="change('visualize')">시각화</a></b>
   </body>
+  <script type="text/javascript">
+    function change(fileName) {
+      var location;
+      location = fileName + '.html'
+      window.location.replace(location);
+    }
+  </script>
 </html>
