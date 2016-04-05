@@ -1,0 +1,78 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  font: 500 13px "helvetica neue", helvetica, arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #5D6D81;
+}
+
+a {
+  color: #040810;
+  text-decoration: none;
+}
+
+a:active {
+  color: #1BB3D7;
+}
+
+h1, p {
+  width: 400px;
+  margin: 0 auto;
+}
+
+h1, p, h1::before {
+  transition: .4s;
+}
+
+h1 {
+  position: relative;
+  font-weight: 500;
+  font-size: 13px;
+  color: #1394BF;
+  cursor: pointer;
+}
+
+h1:first-child {
+  margin-top: 100px;
+}
+
+h1:not(:first-child) {
+  padding-top: 12px;
+  border-top: 1px solid #E9EBED;
+}
+
+h1::before {
+  content: "";
+  position: absolute;
+  width: 7px;
+  height: 5px;
+  margin: 6px 0 0 -16px;
+  background: url('../resource/blue-arrow.svg');
+  -webkit-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}
+
+h1.open::before {
+  -webkit-transform: none;
+  transform: none;
+}
+
+h1.open ~ h1 {
+  -webkit-transform: translateY(24px);
+  transform: translateY(24px);
+}
+
+p {
+  opacity: 0;
+  pointer-events: none;
+}
+
+h1.open + p {
+  opacity: 1;
+  pointer-events: auto;
+  -webkit-transform: translateY(8px);
+  transform: translateY(8px);
+}
