@@ -1,0 +1,68 @@
+body  {
+  font-family: 'Roboto', sans-serif;
+}
+b{
+  font-size: 1.2em;
+}
+i{
+  font-size: 1.5em
+  font-weight: bold;
+  font-family: 'Roboto', sans-serif;
+}
+.important{
+  font-size: 1.5em;
+  font-weight: bold;
+  border: dotted;
+  background-color: #A2DED0;
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-right: 10px;
+
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+.content{
+  border: dotted;
+  background-color: #D2D7D3;
+
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-right: 10px;
+
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+.card {
+  padding-left: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-right: 20px;
+
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+
+  border-style: solid;
+  border-color: black;
+}
+.center{
+  text-align: center;
+}
+.raised{
+  border-radius: 8px;
+  color: #ffffff;
+  background: #827d82;
+  padding: 6px 6px 6px 6px;
+  box-shadow: 1px 1px 1px #888888;
+}
+.raised:hover{
+  background: #000000;
+  box-shadow: none;
+}
