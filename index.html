@@ -12,16 +12,40 @@
   </head>
   <body>
     <!-- <b><a onclick="change('visualize')">시각화</a></b> -->
-    <h1 class="open">Data visualization</h1>
+    <!-- <h1 class="open">About Me</h1>
+     <p>안녕하세요.</p>
+    <h1 >데이터 시각화</h1>
       <p onclick="change('visualization')">d3.js</p>
-    <h1>Swift</h1>
-      <p>d3.js</p>
+    <h1>컴퓨터 역사</h1>
+    <h1>언어</h1>
+    <h1>Web</h1>
     <h1>Machine Learning</h1>
-    
+    <h1>Archiving</h1>
+    <h1>연락처</h1>
+      <p><a href=mailto:csyouk@gmail.com>csyouk@gmail.com</a>로 연락을 주세요.</p> -->
+
+    <ul id=nav>
+      <li><a href=#>Home</a></li>
+      <li>
+        <a class=more>데이터 시각화</a>
+        <ul id=popover>
+          <li><a onclick="change('visualization')">d3.js</a></li>
+
+        </ul>
+      </li>
+      <li>
+        <a href=#>컴퓨터 역사</a>
+      </li>
+      <li>
+        <a class=more>연락처</a>
+        <ul id=popover>
+          <li><a href=mailto:csyouk@gmail.com>csyouk@gmail.com</a></li>
+        </ul>
+      </li>
+    </ul>
 
     <code>
-      clicking on "h1" removes class "open" on "h1.open"
-      clicking on "h1" adds class "open" on "target"
+      clicking on ".more" toggles class "visible" on "#popover"
     </code>
   </body>
   <script src="./custom/js/custom.js"></script>
