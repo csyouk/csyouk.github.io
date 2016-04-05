@@ -12,6 +12,15 @@ i{
 img{
   width: 100%
 }
+h3 {
+  background-color: black;
+  color: white;
+  padding: 10px 10px 10px 10px;
+}
+div.post:hover{
+  background-color: black;
+  color:white;
+}
 .important{
   font-size: 1.5em;
   font-weight: bold;
@@ -94,4 +103,29 @@ img{
   background: url('data:image/svg+xml;charset=utf-8,<svg%20version%3D"1.1"%20xmlns%3D"http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg"%20width%3D"100"%20height%3D"100"%20fill%3D"rgba(0%2C%20130%2C%20117%2C%201.00)">%0D%0A<polygon%20points%3D"0%2C50%2050%2C0%200%2C0"%20%2F>%0D%0A<polygon%20points%3D"0%2C100%2050%2C100%20100%2C50%20100%2C0"%20%2F>%0D%0A<%2Fsvg>');
   background-size: 1em 1em;
 
+}
+.post{
+  font-size: 1.5em;
+  font-weight: bold;
+  border: solid;
+  background: url('data:image/svg+xml;charset=utf-8,<svg%20version%3D"1.1"%20xmlns%3D"http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg"%20width%3D"100"%20height%3D"100"%20fill%3D"rgba(0%2C%20130%2C%20117%2C%201.00)">%0D%0A<polygon%20points%3D"0%2C50%2050%2C0%200%2C0"%20%2F>%0D%0A<polygon%20points%3D"0%2C100%2050%2C100%20100%2C50%20100%2C0"%20%2F>%0D%0A<%2Fsvg>');
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-right: 10px;
+
+  margin-left: 20px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+span.summary{
+  font-size: 1em;
+  color:white;
+  background-color: black;
+  padding-left: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-right: 10px;
+  margin-top: 50px;
 }
