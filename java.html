@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Java</title>
+  <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="./custom/css/style.css" title="no title" charset="utf-8">
+  <link rel="stylesheet" href="./lib/css/prism.css" title="no title" charset="utf-8">
+  <script src="./lib/js/prism.js"></script>
+  <script src="./lib/js/google-analytics.js"></script>
+</head>
+<body>
+  <div class="update"><span class="update-text"></span></div>
+
+  <div class="card">
+    <h1>제네릭</h1>
+    부제 : 실수를 방지할수 있도록 도와주는 제네릭
+    <br>
+    <pre class="line-numbers">
+      <code class="language-javascript">
+        public class CastingDTO implements Serializable {
+            private Object object;
+            public void setObject(Object object){
+                this.object = object;
+            }
+            public Object getObject(){
+                return object;
+            }
+        }
+
+        public class GenericSample {
+            public void checkCastingDTO(){
+                CastingDTO dto1 = new CastingDTO();
+                dto1.setObject(new String());
+
+                CastingDTO dto2 = new CastingDTO();
+                dto2.setObject(new StringBuffer());
+
+                CastingDTO dto3 = new CastingDTO();
+                dto3.setObject(new StringBuilder());
+            }
+
+            public static void main(String[] args){
+                GenericSample sample = new GenericSample();
+                sample.checkCastingDTO();
+            }
+        }
+      </code>
+    </pre>
+    위 코드를 문제없이 컴파일되서 값을 객체에 저장한 후에, 종료한다.
+    <br>
+    하지만, 값을 꺼낼때 문제가 생긴다. getter 메소드를 호출함으로써 넘어오는 객체의 타입은 모든 객체의 상위 객체,
+    <code class="language-js">Object</code> 형이기 때문이다.
+    <br>
+    그래서 각각의 객체의 타입을 원래의 형으로 캐스팅을 해줘야 한다.
+    <br>
+    캐스팅을 하면 다음과 같이 코드에서 냄새가 나기 시작한다.
+    <pre class="line-numbers">
+      <code class="language-javascript">
+        String temp1 = (String)dto1.getObject();
+        StringBuffer temp2 = (StringBuffer)dto2.getObject();
+        StringBuilder temp3 = (StringBuilder)dto3.getObject();
+      </code>
+    </pre>
+    물론 <code class="language-js">instanceof</code> 예약어를 통해서 타입 점검이 가능하다.
+    <br>
+    다년간의 삽질 끝에 2004년, JDK 5.0 부터 <b>제네릭</b>이 추가되었다.
+    <br><br>
+    바뀐 코드를 감상해 보자.
+    <br>
+    <pre class="line-numbers">
+      <code class="language-javascript">
+        public class CastingGenericDTO&#60;T&#62; implements Serializable {
+            private T object;
+            public void setObject(T obj){
+                this.object = obj;
+            }
+            public T getObject(){
+                return object;
+            }
+        }
+      </code>
+    </pre>
+    <b>T</b> 라고 되어 있는 부분에는 아무런 문자가 들어가도 상관없다.
+    <br>
+    단지 기억해야 할 점은 꺽쇠(angle bracket)
+    <b><&nbsp;></b> 부분에 외부에서 지정한 클래스의 형이 들어가야 한다는 점이다.
+    <br>
+    보통은 해당 데이터 타입에 대한 기술을 해주는 것이 좋다. 예를 들면 <code class="language-js">StringClass</code>와 같이.
+    <pre class="line-numbers">
+      <code class="language-javascript">
+        public class GenericSample {
+            public void checkCastingDTO(){
+                CastingGenericDTO&#60;String&#62; dto1 = new CastingGenericDTO&#60;String&#62;();
+                dto1.setObject(new String());
+                CastingGenericDTO&#60;StringBuffer&#62; dto2 = new CastingGenericDTO&#60;StringBuffer&#62;();
+                dto1.setObject(new StringBuffer());
+                CastingGenericDTO&#60;StringBuilder&#62; dto3 = new CastingGenericDTO&#60;StringBuilder&#62;();
+                dto1.setObject(new StringBuilder());
+
+                String temp1 = dto1.getObject();
+                StringBuffer temp2 = dto2.getObject();
+                StringBuilder temp3 = dto3.getObject();
+            }
+            public static void main(String[] args){
+                GenericSample sample = new GenericSample();
+                sample.checkCastingDTO();
+            }
+        }
+      </code>
+    </pre>
+    setter 메소드를 호출해서 값을 저장하는 부분은 좀 더 길어진 감이 없잖아 있다.
+    반면, getter 메소드를 호출해서 값을 꺼내오는 부분은 좀 더 간결해 졌다.
+    <br>
+    하지만, 단지 코드의 줄수를 적게 만드려고 이런 기능을 제공해준 건 아니다.
+    <br>
+    제네릭의 진정한 장점은, 타입 형 변환에서 발생할 수 있는 문제점을 <b>사전</b>에 없애기 위해서 만들었다는 점이다.
+    <br>
+    <b>사전</b>이라는 점은 자바에서는 컴파일 타임에 점검해서 문제를 발견할 수 있다는 뜻이다.
+    <br><br><br>
+    제네릭 타입을 선언할 때, 클래스 선언시 꺾쇠 안에 어떤 단어가 들어가도 상관이 없지만,
+    기왕이면, 지켜주면 좋은 규칙이 있다.(이를 <b>convention</b>이라고 한다.)
+    <br>
+    살펴보면 다음과 같다.
+    <ul>
+      <li>E - Element (used extensively by the Java Collections Framework)</li>
+      <li>K - Key</li>
+      <li>N - Number</li>
+      <li>T - Type</li>
+      <li>V - Value</li>
+      <li>S,U,V etc. - 2nd, 3rd, 4th types</li>
+    </ul>
+    <br><br>
+    <h2>제네릭에 <b>?</b>를 넣는다면,</h2>
+    모든 타입의 데이터가 넘어올 수 있다.
+    하지만, 가급적이면 메소드의 매개변수로만 사용하자. --- (1)
+    <br>
+    만약에 객체에 제네릭 타입을 주는 식으로 작성하면, <b>컴파일 불가능한 코드</b>가 될것이다. --- (2)
+    <h2>case (1)</h2>
+    <pre class="line-numbers">
+      <code class="language-javascript">
+        public void wildcardMethod(WildcardGeneric&#60;?&#62; c){
+            Object value = c.getWildcard();
+            System.out.println(value);
+        }
+      </code>
+    </pre>
+    <h2>case (2)</h2>
+    <pre class="line-numbers">
+      <code class="language-javascript">
+        WildcardGeneric&#60;?&#62; wildcard = new WildcardGeneric&#60;String&#62;();
+      </code>
+    </pre>
+    <br><br><br>
+    <h2>제네릭 선언에 사용하는 타입의 범위도 지정할 수 있다.</h2>
+    일단 코드부터 보자.
+    <pre class="line-numbers">
+      <code class="language-javascript">
+        public class BusAndCarWildcardGenericSample {
+            public void callWildcardMethod(){
+                WildcardGeneric&#60;Car&#62; wildcard = new WildcardGeneric&#60;Car&#62;();
+                wildcard.setWildcard(new Car("Tayo-Tayo"));
+                wildcardMethod(wildcard);
+            }
+            public void wildcardMethod(WildcardGeneric&#60;? extends Car&#62; c){
+                Car value = c.getWildcard();
+                System.out.println(value);
+            }
+
+            public static void main(String[] args){
+                BusAndCarWildcardGenericSample sample = new BusAndCarWildcardGenericSample();
+                sample.callWildcardMethod();
+            }
+        }
+      </code>
+    </pre>
+    <b>wildcardMethod</b>부분에서 매개변수로 넘어오는
+    <code class="language-js">WildcardGeneric&#60;? extends Car&#62; c</code> 부분을 보자.
+    <br>
+    이 기호들의 뜻은, 오직 <b>'Car'라는 데이터 형</b>을 가진 매개변수들만 메소드의 인자로 넘어 올 수 있다는 뜻이다.
+    <br>
+
+
+  </div>
+
+  <div class="card">
+    <h1>DTO</h1>
+    <br>Data Transfer object
+    <br>
+    데이터가 포함된 객체를 한 시스템에서 다른 시스템으로 전달하는 작업을 처리하는 객체를 일컫는다.
+    <br>
+    여기서 주목해야 할 부분은 <b>한 시스템</b>에서 <b>다른 시스템</b>으로 전달한다는 문장이다.
+    <pre class="line-numbers">
+      <code class="language-javascript">
+        import java.io.Serializable;
+        public class CastingDTO implements Serializable {
+            private Object object;
+            public void setObject(Object object){
+                this.object = object;
+            }
+            public Object getObject(Object object){
+                return object;
+            }
+        }
+      </code>
+    </pre>
+    <br>
+    일반적인 DTO 객체는 위와 같이 Serializable를 인터페이스로 채택하고 getter와 setter 메소드를 구현해줘야 한다.
+    <br>
+    Serializable 인터페이스를 구현함으로써, JVM 힙 영역에 존재하는 객체를(논리적 구조)
+    한 줄로 늘어선 바이트의 형태로 만드는 것을 객체의 직렬화라고 한다.
+    직렬화 시킨 데이터를 다시 객체의 형태로 복원하는 작업을 unserialization이라고 한다.
+    <br>
+    재미있는 점은, Serialzable 인터페이스에는 구현해야할 메소드가 없다.
+    <br>
+    Serializable 인터페이스를 구현한 구현체를 그저 JVM에게 알려주는 역할만한다는 것을 어림잡아 볼 수 있다.
+    <br><br>
+    <div class="content">
+      <h2>serialVersionUID가 필요한 이유는?</h2>
+      직렬화 과정에서 serialVersionUID 버전이 포함되게 하고, 역직렬화 과정에서 java class에 선언되어 있는
+      serialVersionUID의 버전이 서로 동일한지 체크를 하게 되는데,
+      <br>
+      사용자가 붙이지 않았다면, <a href="http://docs.oracle.com/javase/6/docs/platform/serialization/spec/class.html#4100">JVM에서 자동으로 부여한다.</a>
+      <br><br>
+      버전이 바뀌게 되면, 객체의 상태가 바뀌었다는 것을 의미하고, 객체로 복원하는 과정중에 오류가 발생했거나,
+      데이터가 위조가 되었을 가능성이 있음을 시사한다.
+    </div>
+  </div>
+
+  <div class="card">
+    <h1>VO</h1>
+    <br>Value object
+    <br>
+    DTO와 동일한 개념이나, <b>값을 읽는</b>목적이 주용도인 객체
+  </div>
+
+  <div class="card">
+    <h1>DAO</h1>
+    <br>Data Access Object
+    <br>
+  </div>
+
+  <div class="card">
+    본 문서는 <b><a href="http://www.tuning-java.com/">자바의 신</a></b> 책을 동료들과 스터디 하며 남긴 기록물입니다.
+    <br>
+    위키피디아 : <a target="_blank" href="href=https://www.wikiwand.com/en/Generics_in_Java"><span>제네릭</span></a>
+    <br>
+    Oracle Docs : <a target="_blank" href="https://docs.oracle.com/javase/tutorial/java/generics/types.html">Generic Types</a>
+  </div>
+</body>
+</html>
+<!-- <code class="language-js"></code> -->
+<!-- <pre class="line-numbers">
+  <code class="language-javascript">
+    var paragraphs = document.getElementsByTagName("p");
+    for (var i = 0; i < paragraphs.length; i++) {
+      var paragraph = paragraphs.item(i);
+      paragraph.style.setProperty("color", "white", null);
+    }
+  </code>
+</pre> -->
