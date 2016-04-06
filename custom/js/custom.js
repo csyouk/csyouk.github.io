@@ -12,7 +12,7 @@ new Taggle('post1', {
     tags: ['d3']
 });
 new Taggle('post2', {
-    tags: ['java','OOP']
+    tags: ['java','generic','oop']
 });
 $(".post1").airport(["Data", "Visualization", "With D3.js"],{fill_space: true, transition_speed:getRandomInt(1000,3000), loop:true});
 $(".post2").airport(["Java", "Generic"],{fill_space: true, transition_speed:getRandomInt(1000,3000), loop:true});
