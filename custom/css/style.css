@@ -20,6 +20,8 @@ h3 {
 div.post:hover{
   background-color: black;
   color:white;
+  border: solid;
+  border-color: black;
 }
 .important{
   font-size: 1.5em;
