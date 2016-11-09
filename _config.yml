@@ -3,13 +3,18 @@ title: CS life log
 email: csyouk@gmail.com
 description: |
   Not a developer. Want to be a hacker.
-baseurl: ''
+baseurl: '/'
 url: csyouk.github.io
 github_username: csyouk
+
+# Build settings
 markdown: kramdown
 theme: minima
 gems:
-- jekyll-feed
+  - jekyll-feed
+  - jekyll-paginate
 exclude:
-- Gemfile
-- Gemfile.lock
+  - Gemfile
+  - Gemfile.lock
+
+paginate: 5
