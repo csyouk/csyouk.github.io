@@ -3,7 +3,7 @@ title: "포스트 작성 가이드"
 layout: post
 date: '2016-11-07 14:09:42 +0900'
 categories: howto
-tag: guide, post, writing
+tags: guide, post, writing
 ---
 
 1. 포스트 작성 당시의 맥락을 서술한다.
