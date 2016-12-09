@@ -1,9 +1,12 @@
 ---
-title: "포스트 작성 가이드"
+title: 포스트 작성 가이드
 layout: post
 date: '2016-11-07 14:09:42 +0900'
 categories: howto
-tags: [guide, post, writing]
+tags:
+- guide
+- post
+- writing
 ---
 
 1. 포스트 작성 당시의 맥락을 서술한다.
@@ -11,3 +14,5 @@ tags: [guide, post, writing]
 3. 정제된 문장으로 정리한다.
 4. 작성중인 글은, 나중에 다시 이어서 글을 쓰더라도, 맥락을 놓치지 않기 위해서, 글을 쓰려고 했던 목표와, 키워드를 적어 놓고, 게시 상태를 ```published: false``` 로 바꿔놓는다.
 5. 참조한 글들이 있으면, 출처를 반드시 밝힌다.
+6. 초안을 쓰고 난 이후 반드시 다시 읽어보고 검토를 한다.
+7. [부산대학교 맞춤법 검사기](http://speller.cs.pusan.ac.kr/PnuWebSpeller/lib/check.asp)를 이용해서 맞춤법 검사를 한다.
