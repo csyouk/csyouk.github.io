@@ -32,3 +32,12 @@
 .post-tags {
   text-align: right;
 }
+pre.highlight {
+  background-color: #2ABB9B !important;
+  border-style: solid;
+  border-color: black;
+  border-width: thin;
+}
+code {
+  background-color: #2ABB9B !important;
+}
