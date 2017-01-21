@@ -158,3 +158,25 @@ INSTALLED_APPS = (
 ~~~
 python manage.py makemigrations polls
 ~~~
+
+마이그레이션을 하는 절차는 다음과 같다.
+- 모델을 변경한다.
+- **python manage.py makemigrations** 명령어를 실행해서 마이그레이션을 한다.
+- **python manage.py migration** 명령어를 적용시켜 데이터베이스의 내용들을 변경한다.
+
+---
+## API로 장고 가지고 놀기.
+
+~~~
+python manage.py shell
+~~~
+
+이 방식으로 하기가 싫다면, 다음과 같이 해보자. 이렇게 하면 **mysite/settings.py**에 있는 설정 내용을 불러와서 프로젝트가 설정이된다.
+ipython notebook에서 할때는 이런 방식으로 프로젝트와 앱을 로딩해서 가지고 놀 수 있다.
+~~~
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mysite.settings")
+
+import django
+django.setup()
+~~~
