@@ -370,16 +370,20 @@ Django의 TEMPLATE_LOADERS 세팅을 통해서 다양한 소스로 부터 템플
 
 
 이제 **polls/templates/polls/index.html** 을 다음과 같이 고쳐보자.
+
+
 ~~~
-{% if latest_question_list %}
-    <ul>
-    {% for question in latest_question_list %}
-        <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No polls are available.</p>
-{% endif %}
+{% raw %} {% if latest_question_list %} {% endraw %}
+{% raw %}     <ul> {% endraw %}
+{% raw %}     {% for question in latest_question_list %} {% endraw %}
+{% raw %}         <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li> {% endraw %}
+{% raw %}     {% endfor %} {% endraw %}
+{% raw %}     </ul> {% endraw %}
+{% raw %} {% else %} {% endraw %}
+{% raw %}     <p>No polls are available.</p> {% endraw %}
+{% raw %} {% endif %} {% endraw %}
+
+
 ~~~
 view 함수를 통해서 넘어온 **latest_question_list** 객체를 템플릿에서 사용할 수 있게 되었다.
 
@@ -418,16 +422,16 @@ def detail(request, question_id):
 투표의 질문을 누르면 다른 웹페이지로 이동하는 코드였는데, 이 부분이 하드코딩 되어 있었다.  
 이 부분을 다음과 같이 바꿔보자.
 ~~~
-<li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li>
+<li><a href="{% raw %}{% url 'detail' question.id %}{% endraw %}">{{ question.question_text }}</a></li>
 ~~~
-**{% url %}** 템플릿 테그를 이용해서 URL 설정에 정의되어 있는 특정 URL 경로의 의존성을 제거 할 수 있게 된다.
+**{% raw %}{% url %}{% endraw %}** 템플릿 테그를 이용해서 URL 설정에 정의되어 있는 특정 URL 경로의 의존성을 제거 할 수 있게 된다.
 
 ---
 ### URL 이름을 namespace화 하기.
 예제 프로젝트는 **polls** 앱 하나밖에 없지만, 실제 장고 프로젝트에서는 수십개가 넘는 앱을 등록해서 사용할 수 있게 될 것이다.
 장고는 어떻게 URL 이름들을 구별할 수 있을까?   
 예를 들어서 **polls** 앱은 **detail** 뷰를 가지고 있다. 근데 만약에 **blog** 앱도 **detail** 뷰를 가지고 있다면 어떻게 될까?
-Django는 **{% url %}** 템플릿 테그를 사용할 때 어떤 앱의 view를 생성해서 만들어야할지 알까?  
+Django는 **{% raw %}{% url %}{% endraw %}** 템플릿 테그를 사용할 때 어떤 앱의 view를 생성해서 만들어야할지 알까?  
 
 답을 말하자면 최상의 URL설정에서 namespace를 더하면 된다. **mysite/urls.py** 에서 namespace를 더해보자.
 ~~~
@@ -439,7 +443,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 )
 ~~~
-그리고 네임스페이스가 필요한 템플릿(**polls/templates/polls/index.html**)을 다음과 같이 고쳐준다. 
+그리고 네임스페이스가 필요한 템플릿(**polls/templates/polls/index.html**)을 다음과 같이 고쳐준다.
 ~~~
-<li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
+<li><a href="{% raw %}{% url 'polls:detail' question.id %}{% endraw %}">{{ question.question_text }}</a></li>
 ~~~
