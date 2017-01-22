@@ -190,12 +190,15 @@ python manage.py createsuperuser
 ~~~
 ---
 ## 개발 서버 실행하기
+
 ~~~
 python manage.py runserver
 ~~~
+
 ---
 ## 투표 앱을 관리자 화면에서 수정할 수 있게 하기
 - **polls/admin.py** 파일을 연 후, 다음을 추가한 다음, **localhost:8000/admin/**사이트를 들어가본다.
+
 ~~~
 from django.contrib import admin
 from polls.models import Question
