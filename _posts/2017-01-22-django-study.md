@@ -7,7 +7,7 @@ tags:
 - django
 - framework
 ---
-
+# Part 1
 Tutorial 문서는 [이곳](https://docs.djangoproject.com/en/1.7/intro/tutorial01/)의 문서를 따라했다.
 
 설치되어 있는 장고의 버전을 확인해 보자.
@@ -35,7 +35,7 @@ pip install django==1.7
 
 유의할 점은, 프로젝트를 만들 때 **django**라는 네이밍이나 **test**라는 네이밍을 쓰는 것을 추천하지 않는다. (파이썬의 내장 패키지와 충돌을 일으킬 수 있기 때문이다.)
 
-## 프로젝트 생성하기.
+### 프로젝트 생성하기.
 ~~~
 django-admin.py startproject mysite
 ~~~
@@ -60,7 +60,7 @@ mysite/
 
 ---
 
-## Database setup
+### Database setup
 데이터 베이스 셋업은 **mysite/settings.py**에서 한다.
 tutorial 에서는 SQLite를 사용한다.
 
@@ -75,7 +75,7 @@ sqlite3 db.sqlite3
 sqlite 의 shell command를 알고 싶다면 [이곳](https://sqlite.org/cli.html)을 참조할 것!
 
 ---
-## 개발 서버 실행하기
+### 개발 서버 실행하기
 ~~~
 python manage.py runserver
 ~~~
@@ -89,7 +89,7 @@ python manage.py runserver 0.0.0.0:8080
 ~~~
 
 ---
-## 모델 생성하기
+### 모델 생성하기
 ** 프로젝트와 앱의 차이는 무엇인가요? **
 - 앱 : 앱은 웹 어플리케이션을 일컫는다. (weblog system, database, ...)
 - 프로젝트 : 앱의 상위개념이다. 설정과 앱들의 모음이다. 그렇다고, 앱이 프로젝트에 종속적으로 포함된 관계는 아니다. 물론 하나의 프로젝트는 여러개의 앱을 가지고 있지만, 앱은 복수 개의 프로젝트에 포함되어 있을 수 있다. (Microservice architecture를 생각해보라.)
@@ -135,7 +135,7 @@ class Choice(models.Model):
 ~~~    
 
 ---
-## 모델 활성화 하기
+### 모델 활성화 하기
 
 - 또 뜬금포지만, 장고 앱의 철학은, 각 앱이 컨테이너(프로젝트에)에 **pulggable**할 수 있도록 설계가 되어져 있다. 뜬금포를 꺼내는 이유는 polls앱을 프로젝트 내에 생성했다고, 바로 사용할 수 있는 것이 아니라, settings.py에서 설정을 해줘야 사용할 수 있기 때문이다.
 
@@ -165,7 +165,7 @@ python manage.py makemigrations polls
 - **python manage.py migration** 명령어를 적용시켜 데이터베이스의 내용들을 변경한다.
 
 ---
-## API로 장고 가지고 놀기.
+### API로 장고 가지고 놀기.
 
 ~~~
 python manage.py shell
@@ -182,21 +182,21 @@ django.setup()
 ~~~
 
 ---
-
-## 최고 관리자 만들기
+# Part 2
+### 최고 관리자 만들기
 
 ~~~
 python manage.py createsuperuser
 ~~~
 ---
-## 개발 서버 실행하기
+### 개발 서버 실행하기
 
 ~~~
 python manage.py runserver
 ~~~
 
 ---
-## 투표 앱을 관리자 화면에서 수정할 수 있게 하기
+### 투표 앱을 관리자 화면에서 수정할 수 있게 하기
 - **polls/admin.py** 파일을 연 후, 다음을 추가한 다음, **localhost:8000/admin/**사이트를 들어가본다.
 
 ~~~
@@ -207,3 +207,109 @@ admin.site.register(Question)
 ~~~
 
 ---
+# Part 3
+
+django에서 말하는 **view**란 web page를 일컫는다. 이 web page는 특정한 함수와 특정한 템플릿을 통해 제공된다.  
+django에서 웹 페이지와 컨텐츠는 뷰에 의해서 제공이 되는데, 각각의 뷰는 파이썬 함수에의해서 표현된다.(method, class-based-view).  
+
+**polls/view.py**에 다음과 같이 메소드를 만들어보자.
+
+~~~
+from django.http import HttpResponse
+
+def index(request):
+    return HttpResponse('Hello! this is poll index page!')
+~~~
+
+view를 보게 하기 위해서는 view를 url에 매핑 시켜주어야 한다.
+**polls/urls.py** 파일을 생성해 보자. 생성한 파일에 다음 코드를 작성해 보자.
+
+~~~
+from django.conf.urls import patterns, url
+from polls import views
+
+urlpatterns = patterns('',
+    url(r'^$', views.index, name='index'),
+)
+~~~
+
+polls 앱에 view를 매핑 시켰으면, 이제 프로젝트 url에 다음 코드를 작성한다.
+**mysite/urls.py** 파일을 연 후,
+
+~~~
+from django.conf.urls import patterns, include, url
+from django.contrib import admin
+
+urlpatterns = patterns('',
+    url(r'^polls/', include('polls.urls')), # 이 부분을 작성한다.
+    url(r'^admin/', include(admin.site.urls)),
+)
+~~~
+
+이제 **http://localhost:8000/polls/** 를 통해 접속해 보면 다음과 같은 메시지가 나올 것이다.
+~~~
+Hello! this is poll index page!
+~~~
+이 메시지는 **polls/views.py**에 작성한 **index** 메소드의
+리턴 오브젝트 **(HttpResponse('Hello! this is poll index page!'))** 와 일치한다.
+
+위 코드를 보면서 유심히 봐야할 점은 **url** 함수가 인자를 4개를 받는 다는 점이다. 이 중 2개는 필수고, 2개는 옵션이다.
+- 필수
+  - regex
+  - view
+- 옵션
+  - kwargs
+  - name
+
+**view** 를 더 작성해 보도록 해보자.  
+**polls/views.py** 에 다음과 같이 메소드를 추가로 작성해보자.
+~~~
+def detail(request, question_id):
+    return HttpResponse("You're looking at question %s." % question_id)
+
+def results(request, question_id):
+    response = "You're looking at the results of question %s."
+    return HttpResponse(response % question_id)
+
+def vote(request, question_id):
+    return HttpResponse("You're voting on question %s." % question_id)
+~~~
+
+**polls/urls** 모듈에 다음과 같이 url을 추가로 작성해보자.
+
+~~~
+from django.conf.urls import patterns, url
+
+from polls import views
+
+urlpatterns = patterns('',
+    # ex: /polls/
+    url(r'^$', views.index, name='index'),
+    # ex: /polls/5/
+    url(r'^(?P<question_id>\d+)/$', views.detail, name='detail'),
+    # ex: /polls/5/results/
+    url(r'^(?P<question_id>\d+)/results/$', views.results, name='results'),
+    # ex: /polls/5/vote/
+    url(r'^(?P<question_id>\d+)/vote/$', views.vote, name='vote'),
+)
+~~~
+
+위와 같이 만들어 놓은 상태에서, 누군가가 이 웹사이트에 요청을 하는 상황을 가정해 보자.  
+예를 들어서 **/polls/34/** 로 누군가가 **request** 를 보냈다고 하자.  
+이 상황에서 일어나는 일련의 행위들은 다음과 같다.
+- Django는 **mysite.urls** 파이썬 모듈을 로딩 한다. (왜냐하면 **ROOT_URLCONF** 에 해당모듈을 지정해 놓았기 때문이다. 실제로 그렇다.)
+- 로딩한 파이썬 모듈에서 Django는 **urlpatterns** 라는 변수를 찾을 것이다. 그리고 정규표현식을 차례로 탐색할 것이다.
+- **include()** 함수는 다른 URL 설정을 참조하게 된다.
+  - 주의할 점은 **include** 함수는 **$(문자열 매칭의 끝을 알리는 기호)** 를 가지고 있지 않고, **/(슬래시)** 로 끝난다.
+- Django가 **include()** 함수를 만나면, 그 지점까지 일치하는 URL 부분을 잘라서 버리고, 추가 처리를 위해 나머지 문자열(URL)을 URLconf로 보낸다.
+- **include()** 함수의 아이디어는 URL들을 손쉽게 **plug-and-play** 할 수 있도록 한다는 점에 있다.
+- **polls** 앱이 자신만의 **URLconf(polls/urls.py)** 를 가지고 있기 때문에, 이 설정내용은 다양한 경로 밑에 있다고 하더라도, 앱은 여전히 작동하게 된다.
+
+**/polls/34/** 로 요청을 보냈을 때, Django에서 일어나는 일들을 한번 살펴보자.
+- Django는 **'^polls/'** 를 찾은 다음, 매칭시킨다.
+- Django는 일치하는 텍스트(**"polls/"**)를 벗겨낸 다음, 남은 텍스트(**34/**)를 **polls.urls** 의 URLconf 에 보내서 처리한다.
+- **polls.urls** 에서는 남은 텍스트를 **r'^(?P<question_id>\d+)/$'** 와 일치여부를 비교한 후, **detail()** view 를 호출한다.
+~~~
+detail(request=<HttpRequest object>, question_id='34')
+~~~
+- 위와 같이 호출된 결과를 받아서 request를 보낸 사용자에게 결과를 보낸다.
