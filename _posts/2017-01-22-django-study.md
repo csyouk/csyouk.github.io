@@ -313,3 +313,133 @@ urlpatterns = patterns('',
 detail(request=<HttpRequest object>, question_id='34')
 ~~~
 - 위와 같이 호출된 결과를 받아서 request를 보낸 사용자에게 결과를 보낸다.
+
+django는 routing규칙이 상당히 복잡하다. part 3은 이런 복잡한 routing규칙에 대한 예시를 보여주고 있다.
+
+---
+### 행위를 하는 뷰를 작성해보기.
+- 뷰는 둘 중 하나의 행위를 하게 되어 있다. 그 둘은 뭐냐 하면..
+  - 요청한 페이지에 HttpResponse 객체를 담아서 반환한다.
+  - 예외를 일으킨다. **Http404** 객체같은..
+
+**polls/views.py** 에 있는 코드를 다음과 같이 수정해보자.
+~~~
+from django.http import HttpResponse
+
+from polls.models import Question
+
+
+def index(request):
+    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    output = ', '.join([p.question_text for p in latest_question_list])
+    return HttpResponse(output)
+~~~
+그리고 위의 코드를 다음과 같이 고쳐보자. 변한게 있다면, index 메소드는 index.html 템플릿을 호출한 다음, context에 넘긴다.   
+~~~
+from django.http import HttpResponse
+from django.template import RequestContext, loader
+
+from polls.models import Question
+
+
+def index(request):
+    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    template = loader.get_template('polls/index.html')
+    context = RequestContext(request, {
+        'latest_question_list': latest_question_list,
+    })
+    return HttpResponse(template.render(context))
+~~~
+그리고 **render()** 메소드를 사용해서 리팩토링을 해보자.
+~~~
+from django.shortcuts import render
+
+from polls.models import Question
+
+
+def index(request):
+    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    context = {'latest_question_list': latest_question_list}
+    return render(request, 'polls/index.html', context)
+~~~    
+
+**templates/polls** directory를 만들어 보자. Django는 템플릿을 이곳에서 찾게 될 것이다.  
+Django의 TEMPLATE_LOADERS 세팅을 통해서 다양한 소스로 부터 템플릿을 import해서 쓸수 있게 한다.  
+기본 설정은 **django.template.loaders.app_directories.Loader** 인데, **INSTALLED_APPS** 에 있는
+**templates** subdirectory를 탐색한다. (이 설정 때문에 우리가 따로 **TEMPLATE_DIRS** 을 건드리지 않았다.)
+
+
+이제 **polls/templates/polls/index.html** 을 다음과 같이 고쳐보자.
+~~~
+{% if latest_question_list %}
+    <ul>
+    {% for question in latest_question_list %}
+        <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
+~~~
+view 함수를 통해서 넘어온 **latest_question_list** 객체를 템플릿에서 사용할 수 있게 되었다.
+
+---
+### 404 에러 발생시키기.
+Question 객체에 데이터가 없을 수도 있으니 다음과 같이 고쳐보자.
+~~~
+from django.http import Http404
+from django.shortcuts import render
+
+from polls.models import Question
+
+def detail(request, question_id):
+    try:
+        question = Question.objects.get(pk=question_id)
+    except Question.DoesNotExist:
+        raise Http404("Question does not exist")
+    return render(request, 'polls/detail.html', {'question': question})
+~~~    
+
+**try catch** 문으로 코드가 지저분해지는 것을 방지하기 위해서 django의 내장 객체 **get_object_or_404** 를 써보자.
+~~~
+from django.shortcuts import get_object_or_404, render
+from polls.models import Question
+def detail(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    return render(request, 'polls/detail.html', {'question': question})
+~~~    
+
+---
+### 템플릿에 하드코딩으로 작성한 URL을 없애보자.
+**polls/index.html** 템플릿에서 다음과 같은 코드가 있었다.
+~~~
+<li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li>
+~~~
+투표의 질문을 누르면 다른 웹페이지로 이동하는 코드였는데, 이 부분이 하드코딩 되어 있었다.  
+이 부분을 다음과 같이 바꿔보자.
+~~~
+<li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li>
+~~~
+**{% url %}** 템플릿 테그를 이용해서 URL 설정에 정의되어 있는 특정 URL 경로의 의존성을 제거 할 수 있게 된다.
+
+---
+### URL 이름을 namespace화 하기.
+예제 프로젝트는 **polls** 앱 하나밖에 없지만, 실제 장고 프로젝트에서는 수십개가 넘는 앱을 등록해서 사용할 수 있게 될 것이다.
+장고는 어떻게 URL 이름들을 구별할 수 있을까?   
+예를 들어서 **polls** 앱은 **detail** 뷰를 가지고 있다. 근데 만약에 **blog** 앱도 **detail** 뷰를 가지고 있다면 어떻게 될까?
+Django는 **{% url %}** 템플릿 테그를 사용할 때 어떤 앱의 view를 생성해서 만들어야할지 알까?  
+
+답을 말하자면 최상의 URL설정에서 namespace를 더하면 된다. **mysite/urls.py** 에서 namespace를 더해보자.
+~~~
+from django.conf.urls import patterns, include, url
+from django.contrib import admin
+
+urlpatterns = patterns('',
+    url(r'^polls/', include('polls.urls', namespace="polls")),
+    url(r'^admin/', include(admin.site.urls)),
+)
+~~~
+그리고 네임스페이스가 필요한 템플릿(**polls/templates/polls/index.html**)을 다음과 같이 고쳐준다. 
+~~~
+<li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
+~~~
