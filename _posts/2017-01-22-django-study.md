@@ -447,3 +447,8 @@ urlpatterns = patterns('',
 ~~~
 <li><a href="{% raw %}{% url 'polls:detail' question.id %}{% endraw %}">{{ question.question_text }}</a></li>
 ~~~
+
+---
+# Part 4
+### Generic View 사용하기 : 적은 코드가 더 낫다!
+- 
