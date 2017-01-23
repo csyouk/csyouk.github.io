@@ -7,7 +7,9 @@ tags:
 - django
 - framework
 ---
+
 # Part 1
+
 Tutorial 문서는 [이곳](https://docs.djangoproject.com/en/1.7/intro/tutorial01/)의 문서를 따라했다.
 
 설치되어 있는 장고의 버전을 확인해 보자.
@@ -501,6 +503,154 @@ urlpatterns = patterns('',
 ~~~
 
 ---
+
 # Part 4
+
 ### Generic View 사용하기 : 적은 코드가 더 낫다!
--
+
+Part 1~3에서 만들어 왔던 **detail(), results(), index()** 뷰들의 공통점이 있다.  
+이런 뷰들은
+- URL을 통해서 넘어온 인자(parameter)를 통해서 데이터베이스로부터 데이터를 가지고 오고,
+- URL에 매핑하는 템플릿을 로딩한 다음
+- 렌더링된 템플릿을 반환
+하는 공통점을 가지고 있다. 이런 행위들이 꽤나 공통적으로 이루어지기 때문에, Django는 **generic views** 라는 시스템을 제공한다.
+
+투표 앱을 **generic views system** 을 사용하는 형태로 바꿔보자. 바꿔가는 과정은 다음과 같다.
+1. URLconf을 바꾼다.
+2. views에서 필요없는 코드들을 지운다.
+3. django의 generic views를 기반으로한 새로운 뷰를 만든다.
+
+---
+
+# Part 5
+
+### 자동화된 테스트 만들기.
+
+### 첫번째 테스트 작성해보기.
+
+**shell** 에 접속한 후, 다음 코드를 작성해보자.
+
+~~~
+## shell login
+python manage.py shell
+
+>>> import datetime
+>>> from django.utils import timezone
+>>> from polls.models import Question
+>>> # create a Question instance with pub_date 30 days in the future
+>>> future_question = Question(pub_date=timezone.now() + datetime.timedelta(days=30))
+>>> # was it published recently?
+>>> future_question.was_published_recently()
+True
+~~~
+
+코드를 보면 알다시피, 미래에 만든 질문은 **recent** 일 수 없다. 이제 이 버그를 고쳐보도록 하자.
+
+**polls/tests.py** 에 다음 테스트 코드를 작성해보도록 하자.
+
+~~~
+import datetime
+
+from django.utils import timezone
+from django.test import TestCase
+
+from polls.models import Question
+
+class QuestionMethodTests(TestCase):
+
+    def test_was_published_recently_with_future_question(self):
+        """
+        was_published_recently() should return False for questions whose
+        pub_date is in the future.
+        """
+        time = timezone.now() + datetime.timedelta(days=30)
+        future_question = Question(pub_date=time)
+        self.assertEqual(future_question.was_published_recently(), False)
+~~~
+
+---
+
+### 테스트 실행하기
+
+~~~
+python manage.py test polls
+~~~
+
+위 명령어를 실행하면 일어나는 일은
+
+- **python manage.py test polls** 은 **polls** 어플리케이션에 있는 테스트를 찾는다.
+- 테스트 프로그램은 **django.test.TestCase** 클래스를 상속받은 클래스를 찾는다.
+- 테스트 프로그램은 테스트를 목적으로 하는 **특별한 데이터베이스** 를 생성한다.
+- 테스트 프로그램은 **test methods** 들을 찾는다. 특히 **test** 로 시작하는 메소드들을 찾는다.
+- 테스트 코드를 실행한 후, 통과여부를 말해준다.
+
+---
+
+### 버그 수정하기
+
+**polls/models.py** 에 있는 코드를 수정한 다음 테스트 프로그램을 실행한다.
+
+~~~
+def was_published_recently(self):
+    now = timezone.now()
+    return now - datetime.timedelta(days=1) <= self.pub_date <= now
+~~~
+
+---
+
+### 뷰 테스트하기
+
+투표 어플리케이션은 사려깊게 작성하지 않았다. 누가 질문지를 미래에 게시한다고 설정을 해놓아도, 누구나 볼 수 있다.  
+질문지가 게시가 되기 전날까지는 보이지 않도록 해야 한다. 이 상황을 고쳐보자.
+
+---
+
+### Django 테스트 클라이언트 생성하기.  
+
+다시, shell환경에 접속해본 후, 환경설정을 해보자.
+
+~~~
+python manage.py shell
+
+>>> from django.test.utils import setup_test_environment
+>>> setup_test_environment()
+~~~
+
+테스트 클라이언트를 생성한 후, 각 url별로 테스트를 해보자.
+
+~~~
+>>> from django.test import Client
+>>> # create an instance of the client for our use
+>>> client = Client()
+>>> # get a response from '/'
+>>> response = client.get('/')
+>>> # we should expect a 404 from that address
+>>> response.status_code
+404
+>>> # on the other hand we should expect to find something at '/polls/'
+>>> # we'll use 'reverse()' rather than a hardcoded URL
+>>> from django.core.urlresolvers import reverse
+>>> response = client.get(reverse('polls:index'))
+>>> response.status_code
+200
+>>> response.content
+'\n\n\n    <p>No polls are available.</p>\n\n'
+>>> # note - you might get unexpected results if your ``TIME_ZONE``
+>>> # in ``settings.py`` is not correct. If you need to change it,
+>>> # you will also need to restart your shell session
+>>> from polls.models import Question
+>>> from django.utils import timezone
+>>> # create a Question and save it
+>>> q = Question(question_text="Who is your favorite Beatle?", pub_date=timezone.now())
+>>> q.save()
+>>> # check the response once again
+>>> response = client.get('/polls/')
+>>> response.content
+'\n\n\n    <ul>\n    \n        <li><a href="/polls/1/">Who is your favorite Beatle?</a></li>\n    \n    </ul>\n\n'
+>>> # If the following doesn't work, you probably omitted the call to
+>>> # setup_test_environment() described above
+>>> response.context['latest_question_list']
+[<Question: Who is your favorite Beatle?>]
+~~~
+
+테스트 코드에 response객체의 property 값을 기준으로 테스트를 진행할 수 있다. 
