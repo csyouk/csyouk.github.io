@@ -169,11 +169,25 @@ Rest framework에서는 Serializer, ModelSerializer등을 제공한다.
 
 ### Class-based views
 
+function-based views를 class-based views로 바꾸는 작업을 진행한다.
+
+**mixins (multiple inheritance)** 개념을 통해서 기존의 class-based view를 refactoring 하는 과정을 보여준다.
+
+> **구현상속(Implementation Inheritance)**
+> 이미 어느 정도 구현이 되어 있는 객체를 상속시키는 방법.
+> java extends 혹은 implements interface
+
+이 쪽 분야의 오래된 논쟁거리 중 하나는 Inheritance가 좋냐, Composite가 좋냐.. 뭐 이런 논쟁거리가 있다고 한다.
+[이곳](https://www.facebook.com/groups/django/permalink/971113676258465)을 참조한다.
+
+
 ---
 
 # Tutorial 4
 
 ### Authentication & Permissions
+
+요청에 인증을 붙이는 방법을 다룬다. 
 
 ---
 
@@ -192,5 +206,3 @@ Rest framework에서는 Serializer, ModelSerializer등을 제공한다.
 # Tutorial 7
 
 ### Schemas & client libraries
-
----
