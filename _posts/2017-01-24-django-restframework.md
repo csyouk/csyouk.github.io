@@ -7,13 +7,33 @@ tags:
 - restful
 ---
 
-# Django restframework
+**shell** 에서 여러가지 실험을 하기 위해서, notebook을 설치한다. 문서는 [이곳](https://opensourcehacker.com/2014/08/13/turbocharge-your-python-prompt-and-django-shell-with-ipython-notebook/)을 참조한다.
 
-django restframework을 쓰기 위해서는 다음 요구사항을 만족시켜야 한다.
+~~~
+# after entering virtualenv
+pip install django_extensions
+
+# add settings.py
+INSTALLED_APPS = (
+  ...
+  'django_extensions'
+)
+
+# after finishing configuration, start notebook in the Terminal
+python manage.py shell_plus --notebook
+~~~
+
+---
+
+# Tutorial 1
+
+**django restframework** 을 쓰기 위해서는 다음 요구사항을 만족시켜야 한다.
+
 - Python (2.7, 3.2, 3.3, 3.4, 3.5)
 - Django (1.8, 1.9, 1.10)
 
 다음 dependency들을 설치한다.
+
 ~~~
 pip install django
 pip install djangorestframework
@@ -66,6 +86,7 @@ class Snippet(models.Model):
 ~~~
 
 django한테 생성한 모델을 데이터베이스에 반영시키도록 하자.
+
 ~~~
 python manage.py makemigrations snippets
 python manage.py migrate
@@ -112,23 +133,6 @@ class SnippetSerializer(serializers.Serializer):
 - serializer 클래스의 첫번째 부분은 field들이 serialized/deserialized 되는지 정의한다.
 - **create() update()** 메소드는 fully fledged instance가 serializer.save()를 호출했을 때 어떻게 수정되는지를 보여준다.
 
-
-**shell** 에서 여러가지 실험을 하기 위해서 쓰이는 것들을 기록하기 위해서, notebook을 설치한다. 문서는 [이곳](https://opensourcehacker.com/2014/08/13/turbocharge-your-python-prompt-and-django-shell-with-ipython-notebook/)을 참조한다.
-
-~~~
-# after entering venv
-pip install django_extensions
-
-# add settings.py
-INSTALLED_APPS = (
-  ...
-  'django_extensions'
-)
-
-# after finishing configuration, start notebook
-python manage.py shell_plus --notebook
-~~~
-
 ---
 
 ### Serializers 가지고 놀아보기.
@@ -142,5 +146,51 @@ Serializer의 역할은 다음과 같다.
 Django의 Form class, ModelForm class 에 대응되는 개념으로  
 Rest framework에서는 Serializer, ModelSerializer등을 제공한다.
 
-**ModelSerializers**의 기능 또한 눈여겨 볼 필요 있다.
+**ModelSerializers** 의 기능 또한 눈여겨 볼 필요 있다.
 대단한 기능은 아니지만, model에 대한 define을 할 때, 조금이라도 덜 타이핑 할 수 있게 한다.
+
+---
+
+# Tutorial 2
+
+### Request & Response
+
+- Request object
+- Response object
+- Status code
+- Wrapping API views
+  - **@api_vew**  decorator는 function-based view에 쓰인다.
+  - **APIView** 클래스는 class-based view에 쓰인다.
+- 접미사 옵션을 붙여서 URL에서 처리하도록 하기.
+
+---
+
+# Tutorial 3
+
+### Class-based views
+
+---
+
+# Tutorial 4
+
+### Authentication & Permissions
+
+---
+
+# Tutorial 5
+
+### Relationships & Hyperlinked APIs
+
+---
+
+# Tutorial 6
+
+### ViewSets & Routers
+
+---
+
+# Tutorial 7
+
+### Schemas & client libraries
+
+---
