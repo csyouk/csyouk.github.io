@@ -149,6 +149,9 @@ Rest framework에서는 Serializer, ModelSerializer등을 제공한다.
 **ModelSerializers** 의 기능 또한 눈여겨 볼 필요 있다.
 대단한 기능은 아니지만, model에 대한 define을 할 때, 조금이라도 덜 타이핑 할 수 있게 한다.
 
+**Meta class** 가 어떤 역할을 하는지 알고 싶으면 [다음](http://stackoverflow.com/questions/10344197/how-does-djangos-meta-class-work)
+문서를 읽어보는 것이 좋다.
+
 ---
 
 # Tutorial 2
@@ -187,7 +190,7 @@ function-based views를 class-based views로 바꾸는 작업을 진행한다.
 
 ### Authentication & Permissions
 
-요청에 인증을 붙이는 방법을 다룬다. 
+요청에 인증을 붙이는 방법을 다룬다.
 
 ---
 
@@ -200,6 +203,11 @@ function-based views를 class-based views로 바꾸는 작업을 진행한다.
 # Tutorial 6
 
 ### ViewSets & Routers
+
+- 아직 쓰고 있지 않고 있다고 한다.
+
+viewset을 활용하며 추상성을 획득해서 일관성을 높일수 있다.  
+반대로 정확히 어떤일을 하는지 추적하기가 힘들어진다.
 
 ---
 
